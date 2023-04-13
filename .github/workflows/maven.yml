@@ -9,7 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [8, 11]
+        include:
+          - java: 8
+            maven-args: "-P jacoco"
+          - java: 11
 
     name: Build with Java ${{ matrix.java }}
     steps:
@@ -21,7 +24,9 @@ jobs:
         java-version: ${{ matrix.java }}
 
     - name: Build with Maven
-      run: mvn -f Continus-Integration/pom.xml verify
+      run: >
+        mvn -f Continus-Integration/pom.xml
+        clean verify ${{ matrix.maven-args }}
 
     - name: Generate JUnit Report
       run: >
