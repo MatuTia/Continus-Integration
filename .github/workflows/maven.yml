@@ -7,12 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      workdir: Continus-Integration
     strategy:
       matrix:
         include:
           - java: 8
             maven-args: >
-              -P jacoco coveralls:report
+              -P coveralls
               -D repoToken=$COVERALLS_REPO_TOKEN
               -D pullRequest=${{github.event.pull_request.number}}
           - java: 11
@@ -20,6 +22,13 @@ jobs:
     name: Build with Java ${{ matrix.java }}
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml', '**/*.yml') }}
+        restore-keys: ${{ runner.os }}-m2-
 
     - name: Set up JDK ${{ matrix.java }}
       uses: actions/setup-java@v3
@@ -29,15 +38,15 @@ jobs:
 
     - name: Build with Maven
       run: >
-        mvn -f Continus-Integration/pom.xml
-        clean verify ${{ matrix.maven-args }}
+        mvn verify ${{ matrix.maven-args }}
+      working-directory: ${{ env.workdir }}
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN}}
 
     - name: Generate JUnit Report
       run: >
-        mvn -f Continus-Integration/pom.xml
-        surefire-report:report-only site:site -DgenerateReports=false
+        mvn surefire-report:report-only site:site -DgenerateReports=false
+      working-directory: ${{ env.workdir }}
       if: ${{ always() }}
 
     - name: Archive JUnit Report

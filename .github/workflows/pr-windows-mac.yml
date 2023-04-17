@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    env:
+      workdir: Continus-Integration
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
@@ -21,4 +23,5 @@ jobs:
         java-version: 8
 
     - name: Build with Maven
-      run: mvn -f Continus-Integration/pom.xml verify
+      run: mvn verify
+      working-directory: ${{ env.workdir }}
