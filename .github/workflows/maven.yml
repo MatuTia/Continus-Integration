@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      wordir: Continus Integration
+      workdir: Continus Integration
     strategy:
       matrix:
         include:

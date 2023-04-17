@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     env:
-      wordir: Continus Integration
+      workdir: Continus Integration
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
