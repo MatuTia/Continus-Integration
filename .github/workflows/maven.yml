@@ -11,7 +11,7 @@ jobs:
       matrix:
         include:
           - java: 8
-            maven-args: "-P jacoco"
+            maven-args: "-P jacoco coveralls:report -D repoToken=$COVERALLS_REPO_TOKEN"
           - java: 11
 
     name: Build with Java ${{ matrix.java }}
@@ -28,6 +28,8 @@ jobs:
       run: >
         mvn -f Continus-Integration/pom.xml
         clean verify ${{ matrix.maven-args }}
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN}}
 
     - name: Generate JUnit Report
       run: >
