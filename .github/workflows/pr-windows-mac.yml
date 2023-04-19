@@ -21,7 +21,7 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: 8
-        cached: 'maven"
+        cache: 'maven'
 
     - name: Build with Maven
       run: mvn verify
